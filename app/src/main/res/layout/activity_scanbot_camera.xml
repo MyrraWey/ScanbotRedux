@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <com.muravyovdmitr.scanbot.camera_activity.ScanbotCameraView
+        android:id="@+id/scvCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tvFlashStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        tools:text="Flash: "/>
+
+    <TextView
+        android:id="@+id/tvAutomaticCaptureStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        tools:text="AutomaticCapture: "/>
+
+    <TextView
+        android:id="@+id/tvTakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="8dp"
+        android:background="#ffffff"
+        android:padding="8dp"
+        android:text="Take Photo"/>
+
+</FrameLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <net.doo.snap.camera.ScanbotCameraView
+        android:id="@+id/scvCameraa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <net.doo.snap.ui.PolygonView
+            android:id="@+id/pvPolygon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:polygonFillColor="#55009688"
+            app:polygonStrokeColor="#cc009688"
+            app:polygonStrokeWidth="8dp"/>
+
+    </net.doo.snap.camera.ScanbotCameraView>
+
+</merge>
