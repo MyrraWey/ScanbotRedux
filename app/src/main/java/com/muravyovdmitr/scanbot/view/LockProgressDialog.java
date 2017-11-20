@@ -1,4 +1,4 @@
-package com.muravyovdmitr.scanbot;
+package com.muravyovdmitr.scanbot.view;
 
 import android.app.Activity;
 import android.app.Dialog;

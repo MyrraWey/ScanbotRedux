@@ -1,4 +1,4 @@
-package com.muravyovdmitr.scanbot.camera_activity
+package com.muravyovdmitr.scanbot.redux.scanbot_camera
 
 import com.develop.zuzik.redux.core.store.Action
 import com.develop.zuzik.redux.core.store.Reducer
@@ -20,8 +20,8 @@ class ScanbotCameraReducer : Reducer<ScanbotCamera.State> {
 				is ScanbotCameraAction.ToggleFlash -> oldState.copy(flashEnabled = !oldState.flashEnabled)
 				is ScanbotCameraAction.ToggleAutomaticCapture ->
 					oldState.copy(automaticCaptureEnabled = !oldState.automaticCaptureEnabled)
-				is ScanbotCameraAction.PictureProcessingChanged -> oldState.copy(processing = action.inProcessing)
-				is ScanbotCameraAction.SavingPicture -> oldState.copy(processing = true)
-				is ScanbotCameraAction.PictureSaved -> oldState.copy(processing = false, navigateBack = true)
+				is ScanbotCameraAction.TakePicture -> oldState.copy(processing = true)
+				is ScanbotCameraAction.HandlePicture -> oldState.copy(processing = true)
+				is ScanbotCameraAction.PictureHandled -> oldState.copy(processing = false, navigateBack = true)
 			}
 }

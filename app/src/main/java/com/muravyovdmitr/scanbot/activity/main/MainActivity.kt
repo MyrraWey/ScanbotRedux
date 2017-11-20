@@ -1,10 +1,10 @@
-package com.muravyovdmitr.scanbot.main
+package com.muravyovdmitr.scanbot.activity.main
 
 import android.app.Activity
 import android.os.Bundle
 import com.muravyovdmitr.scanbot.R
-import com.muravyovdmitr.scanbot.camera_activity.ScanbotCameraActivity
-import com.muravyovdmitr.scanbot.scan_bot.ScanBotActivity
+import com.muravyovdmitr.scanbot.activity.scan_bot.ScanBotActivity
+import com.muravyovdmitr.scanbot.activity.scanbot_camera.ScanbotCameraActivity
 import com.muravyovdmitr.scanbot.startActivity
 import kotlinx.android.synthetic.main.activity_main.*
 

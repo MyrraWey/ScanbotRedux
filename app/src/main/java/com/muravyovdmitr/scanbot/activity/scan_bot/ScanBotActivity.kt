@@ -1,4 +1,4 @@
-package com.muravyovdmitr.scanbot.scan_bot
+package com.muravyovdmitr.scanbot.activity.scan_bot
 
 import android.app.Activity
 import android.graphics.Bitmap

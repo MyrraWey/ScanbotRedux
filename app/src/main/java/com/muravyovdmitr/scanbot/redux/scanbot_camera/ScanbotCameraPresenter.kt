@@ -1,4 +1,4 @@
-package com.muravyovdmitr.scanbot.camera_activity
+package com.muravyovdmitr.scanbot.redux.scanbot_camera
 
 import com.develop.zuzik.redux.core.extension.asConsumer
 import com.develop.zuzik.redux.core.model.ReduxPresenter
@@ -34,24 +34,13 @@ class ScanbotCameraPresenter(private val model: ScanbotCamera.Model) :
 				.onToggleFlash
 				.subscribe(model.toggleFlash.asConsumer()))
 		intent(view
-				.onPictureStateChanged
-				.subscribe { pictureState ->
-					when (pictureState) {
-						is ScanbotCameraView.PictureState.PreparingPicture -> {
-							model.pictureProcessing.onNext(true)
-						}
-						is ScanbotCameraView.PictureState.Idle -> {
-							model.pictureProcessing.onNext(false)
-						}
-						is ScanbotCameraView.PictureState.PicturePrepared -> {
-							model.pictureProcessing.onNext(false)
-							model.picturePrepared.onNext(pictureState.picture)
-						}
-					}
-
+				.onTakePicture
+				.subscribe {
+					model.takePicture.onNext(Unit)
+					view.takePicture.onNext(Unit)
 				})
 		intent(view
-				.onTakePicture
-				.subscribe(view.takePicture.asConsumer()))
+				.onPictureReceived
+				.subscribe(model.handlePicture.asConsumer()))
 	}
 }

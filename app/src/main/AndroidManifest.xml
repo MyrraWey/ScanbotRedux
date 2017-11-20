@@ -15,15 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".main.MainActivity">
+        <activity android:name=".activity.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".scan_bot.ScanBotActivity"/>
-        <activity android:name=".camera_activity.ScanbotCameraActivity"/>
+        <activity android:name="com.muravyovdmitr.scanbot.activity.scan_bot.ScanBotActivity"/>
+        <activity android:name=".activity.scanbot_camera.ScanbotCameraActivity"/>
 
     </application>
 

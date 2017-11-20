@@ -1,6 +1,5 @@
-package com.muravyovdmitr.scanbot.camera_activity
+package com.muravyovdmitr.scanbot.redux.scanbot_camera
 
-import android.graphics.Bitmap
 import com.develop.zuzik.redux.core.model.Redux
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -16,11 +15,13 @@ interface ScanbotCamera {
 					 val processing: Boolean,
 					 val navigateBack: Boolean)
 
+	data class PictureBundle(val pictureBytes: ByteArray, val pictureOrientation: Int)
+
 	interface Model : Redux.Model<State> {
 		val toggleFlash: Observer<Unit>
 		val toggleAutomaticCapture: Observer<Unit>
-		val pictureProcessing: Observer<Boolean>
-		val picturePrepared: Observer<Bitmap>
+		val takePicture: Observer<Unit>
+		val handlePicture: Observer<PictureBundle>
 	}
 
 	interface View : Redux.View {
@@ -33,7 +34,7 @@ interface ScanbotCamera {
 		val onToggleFlash: Observable<Unit>
 		val onToggleAutomaticCapture: Observable<Unit>
 		val onTakePicture: Observable<Unit>
-		val onPictureStateChanged: Observable<ScanbotCameraView.PictureState>
+		val onPictureReceived: Observable<PictureBundle>
 	}
 
 	interface Presenter : Redux.Presenter<View>

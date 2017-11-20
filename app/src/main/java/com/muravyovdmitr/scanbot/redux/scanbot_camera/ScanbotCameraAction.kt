@@ -1,4 +1,4 @@
-package com.muravyovdmitr.scanbot.camera_activity
+package com.muravyovdmitr.scanbot.redux.scanbot_camera
 
 import com.develop.zuzik.redux.core.store.Action
 
@@ -9,7 +9,7 @@ import com.develop.zuzik.redux.core.store.Action
 sealed class ScanbotCameraAction : Action {
 	class ToggleFlash : ScanbotCameraAction()
 	class ToggleAutomaticCapture : ScanbotCameraAction()
-	class PictureProcessingChanged(val inProcessing: Boolean) : ScanbotCameraAction()
-	class SavingPicture : ScanbotCameraAction()
-	class PictureSaved : ScanbotCameraAction()
+	class TakePicture : ScanbotCameraAction()
+	class HandlePicture : ScanbotCameraAction()
+	class PictureHandled : ScanbotCameraAction()
 }

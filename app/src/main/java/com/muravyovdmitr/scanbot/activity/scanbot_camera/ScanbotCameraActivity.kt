@@ -1,47 +1,42 @@
-package com.muravyovdmitr.scanbot.camera_activity
+package com.muravyovdmitr.scanbot.activity.scanbot_camera
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import com.jakewharton.rxbinding2.view.clicks
-import com.muravyovdmitr.scanbot.LockProgressDialog
 import com.muravyovdmitr.scanbot.R
+import com.muravyovdmitr.scanbot.redux.scanbot_camera.ScanbotCamera
+import com.muravyovdmitr.scanbot.redux.scanbot_camera.ScanbotCameraModel
+import com.muravyovdmitr.scanbot.redux.scanbot_camera.ScanbotCameraPresenter
+import com.muravyovdmitr.scanbot.redux.scanbot_camera.bitmap_factory.ScanbotBitmapFactoryImpl
+import com.muravyovdmitr.scanbot.view.LockProgressDialog
+import com.muravyovdmitr.scanbot.view.ScanbotCameraView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_scanbot_camera.*
 
 class ScanbotCameraActivity : Activity() {
-	private val model: ScanbotCamera.Model = ScanbotCameraModel(ScanbotCamera.State(false, true, false, false))
+	private val model: ScanbotCamera.Model = ScanbotCameraModel(
+			ScanbotCamera.State(false, true, false, false),
+			ScanbotBitmapFactoryImpl())
 	private val presenter: ScanbotCamera.Presenter = ScanbotCameraPresenter(model)
 	private val compositeDisposable = CompositeDisposable()
 	private val cameraView: ScanbotCameraView by lazy { scvCamera }
 	private val progressDialog = LockProgressDialog()
+	private val pictureReceived = PublishSubject.create<ScanbotCamera.PictureBundle>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scanbot_camera)
 
 		model.init()
-
-		compositeDisposable.addAll(
-				model
-						.state
-						.subscribe(
-								{ state -> Log.d("asdasd", "ScanbotCameraModel::state onNext - $state") },
-								{ error -> Log.d("asdasd", "ScanbotCameraModel::state onError - $error") }),
-				model
-						.error
-						.subscribe(
-								{ error -> Log.d("asdasd", "ScanbotCameraModel::error onNext - $error") },
-								{ error -> Log.d("asdasd", "ScanbotCameraModel::error onError - $error") }),
-				cameraView
-						.pictureState
-						.subscribe({ Log.d("asdasd", "ScanbotCameraView::state - $it") }))
 	}
 
 	override fun onStart() {
 		super.onStart()
 
+		cameraView.onPictureReceived = { pictureBytes, pictureOrientation ->
+			pictureReceived.onNext(ScanbotCamera.PictureBundle(pictureBytes, pictureOrientation))
+		}
 		val view = createViewAndInitDisposable()
 		presenter.onStart(view)
 	}
@@ -57,6 +52,7 @@ class ScanbotCameraActivity : Activity() {
 	}
 
 	override fun onStop() {
+		cameraView.onPictureReceived = null
 		compositeDisposable.clear()
 		presenter.onStop()
 		super.onStop()
@@ -77,7 +73,7 @@ class ScanbotCameraActivity : Activity() {
 			override val onToggleFlash = tvFlashStatus.clicks()
 			override val onToggleAutomaticCapture = tvAutomaticCaptureStatus.clicks()
 			override val onTakePicture = tvTakePhoto.clicks()
-			override val onPictureStateChanged = cameraView.pictureState
+			override val onPictureReceived = pictureReceived
 		}
 
 		compositeDisposable.addAll(
