@@ -9,8 +9,16 @@ import net.doo.snap.ScanbotSDKInitializer
  */
 class App : Application() {
 
+	companion object {
+		@JvmStatic
+		lateinit var INSTANCE: App
+			private set
+	}
+
 	override fun onCreate() {
 		super.onCreate()
+		INSTANCE = this
+
 		ScanbotSDKInitializer().initialize(this)
 	}
 }

@@ -5,7 +5,7 @@ import com.develop.zuzik.redux.core.store.Action
 import com.muravyovdmitr.scanbot.redux.scanbot_camera.bitmap_factory.ScanbotBitmapFactory
 import io.reactivex.Observable
 import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -14,7 +14,7 @@ import io.reactivex.subjects.PublishSubject
  */
 class ScanbotCameraModel(defaultState: ScanbotCamera.State,
 						 private val bitmapFactory: ScanbotBitmapFactory,
-						 modelScheduler: Scheduler = AndroidSchedulers.mainThread()) :
+						 modelScheduler: Scheduler = Schedulers.computation()) :
 		ReduxModel<ScanbotCamera.State>(defaultState, modelScheduler),
 		ScanbotCamera.Model {
 
@@ -33,10 +33,8 @@ class ScanbotCameraModel(defaultState: ScanbotCamera.State,
 							Observable
 									.just(pictureBundle)
 									.map { (bytes, orientation) -> bitmapFactory.create(bytes, orientation) }
-									.map<Action> { bitmap ->
-										//TODO save image
-										ScanbotCameraAction.PictureHandled()
-									}
+									.map { /*TODO save image*/ }
+									.map<Action> { ScanbotCameraAction.PictureHandled() }
 									.startWith(ScanbotCameraAction.HandlePicture())
 						})
 

@@ -37,8 +37,7 @@ class ScanbotCameraActivity : Activity() {
 		cameraView.onPictureReceived = { pictureBytes, pictureOrientation ->
 			pictureReceived.onNext(ScanbotCamera.PictureBundle(pictureBytes, pictureOrientation))
 		}
-		val view = createViewAndInitDisposable()
-		presenter.onStart(view)
+		presenter.onStart(createViewAndInitDisposable())
 	}
 
 	override fun onResume() {
