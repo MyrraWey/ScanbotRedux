@@ -20,7 +20,7 @@ class PicturesViewReducer : Reducer<PicturesView.State> {
 				is PicturesViewAction.LoadingPictures -> oldState.copy(processing = true)
 				is PicturesViewAction.PicturesLoaded -> oldState.copy(
 						processing = false,
-						pictures = action.pictures,
+						pictures = oldState.pictures.newVersion(action.pictures),
 						currentPicture = action.page)
 				is PicturesViewAction.PageChanged -> oldState.copy(currentPicture = action.page)
 			}

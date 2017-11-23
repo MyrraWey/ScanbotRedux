@@ -2,6 +2,7 @@ package com.muravyovdmitr.scanbot.redux.pictures_view
 
 import android.graphics.Bitmap
 import com.develop.zuzik.redux.core.model.Redux
+import com.develop.zuzik.redux.core.model.Version
 import io.reactivex.Observable
 import io.reactivex.Observer
 
@@ -11,11 +12,9 @@ import io.reactivex.Observer
  */
 interface PicturesView {
 
-	enum class Filter
-
 	class CounterBundle(val currentPage: Int, val totalPages: Int)
 
-	data class State(val pictures: List<Bitmap>, val currentPicture: Int?, val processing: Boolean)
+	data class State(val pictures: Version<List<Bitmap>>, val currentPicture: Int?, val processing: Boolean)
 
 	interface Model : Redux.Model<State> {
 		val loadPictures: Observer<Unit>
@@ -30,12 +29,10 @@ interface PicturesView {
 		val updateCounter: Observer<CounterBundle>
 
 		val onCurrentPictureChanged: Observable<Int>
-		/*fun startCropActivity(): Observer<Unit>
 
-		fun onSave(): Observable<Unit>
-		fun onAddPicture(): Observable<Unit>
+		/*fun onAddPicture(): Observable<Unit>
 		fun onCropPicture(): Observable<Unit>
-		fun onApplyFilter(): Observable<Filter>
+		val onApplyFilter: Observable<FilterType>
 		fun onRotatePicture(): Observable<Unit>
 		fun onDeletePicture(): Observable<Unit>*/
 	}
