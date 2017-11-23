@@ -47,7 +47,9 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 				}
 		)
 		addAction(resetContour.map { ScanbotCropAction.ResetContour(getDefaultContour()) })
-		addAction(save.map { polygon -> ScanbotCropAction.Save(polygon) })
+		addAction(save
+				//.flatMap { //create and apply crop filter, save to repository }
+				.map { polygon -> ScanbotCropAction.Save(polygon) })
 		addAction(verifyState.map { ScanbotCropAction.Verify(getDefaultContour()) })
 		addReducer(ScanbotCropReducer())
 	}
