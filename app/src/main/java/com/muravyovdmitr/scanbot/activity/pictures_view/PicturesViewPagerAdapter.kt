@@ -1,10 +1,10 @@
 package com.muravyovdmitr.scanbot.activity.pictures_view
 
-import android.graphics.Bitmap
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
 
 
 /**
@@ -13,7 +13,7 @@ import android.widget.ImageView
  */
 
 class PicturesViewPagerAdapter : PagerAdapter() {
-	var pictures: MutableList<Bitmap> = mutableListOf()
+	var pictures: MutableList<Picture> = mutableListOf()
 		set(pictures) {
 			field.clear()
 			field.addAll(pictures)
@@ -26,7 +26,7 @@ class PicturesViewPagerAdapter : PagerAdapter() {
 
 	override fun instantiateItem(container: ViewGroup, position: Int): Any {
 		val imageView = ImageView(container.context)
-		imageView.setImageBitmap(pictures[position])
+		imageView.setImageBitmap(pictures[position].picture)
 		container.addView(imageView)
 		return imageView
 	}

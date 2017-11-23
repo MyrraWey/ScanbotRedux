@@ -1,10 +1,8 @@
 package com.muravyovdmitr.scanbot.activity.pictures_view
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -12,7 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.PopupWindow
-import com.develop.zuzik.redux.core.model.Version
+import com.jakewharton.rxbinding2.view.clicks
 import com.muravyovdmitr.scanbot.R
 import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesView
 import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesViewModel
@@ -21,15 +19,14 @@ import com.muravyovdmitr.scanbot.redux.pictures_view.StubPicturesRepository
 import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterProvider
 import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterToNameMapper
 import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterType
+import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
 import com.muravyovdmitr.scanbot.view.LockProgressDialog
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_pictures_view.*
-import java.util.concurrent.TimeUnit
 
 class PicturesViewActivity : Activity() {
-	private val model: PicturesView.Model = PicturesViewModel(PicturesView.State(Version(data = listOf()), null, false), StubPicturesRepository())
+	private val model: PicturesView.Model = PicturesViewModel(PicturesView.State(listOf(), false), StubPicturesRepository())
 	private val presenter: PicturesView.Presenter = PicturesViewPresenter(model)
 	private val compositeDisposable = CompositeDisposable()
 	private val currentPictureChanged = PublishSubject.create<Int>()
@@ -46,17 +43,17 @@ class PicturesViewActivity : Activity() {
 		model.init()
 		configureViews()
 
+		//TODO smells - logic should be separated from activity
 		compositeDisposable.addAll(
-				model
-						.state
-						.subscribe(
-								{ state -> Log.d("asdasd", "PicturesViewActivity::state onNext - $state") },
-								{ error -> Log.d("asdasd", "PicturesViewActivity::state onError - $error") }),
-				model
-						.error
-						.subscribe(
-								{ error -> Log.d("asdasd", "PicturesViewActivity::error onNext - $error") },
-								{ error -> Log.d("asdasd", "PicturesViewActivity::error onError - $error") }))
+				currentPictureChanged
+						.subscribe { currentPage ->
+							if (picturesViewPagerAdapter.pictures.isNotEmpty()) {
+								tvCounter.text = "${currentPage + 1} of ${picturesViewPagerAdapter.pictures.size}"
+								tvCounter.visibility = View.VISIBLE
+							} else {
+								tvCounter.visibility = View.INVISIBLE
+							}
+						})
 	}
 
 	override fun onStart() {
@@ -114,12 +111,19 @@ class PicturesViewActivity : Activity() {
 
 	private fun createViewAndInitDisposables(): PicturesView.View {
 		val view = object : PicturesView.View {
-			override val showPictures = PublishSubject.create<List<Bitmap>>()
-			override val navigateToPicture = PublishSubject.create<Int>()
-			override val setContentVisibility = PublishSubject.create<Boolean>()
+			override val showPictures = PublishSubject.create<List<Picture>>()
 			override val displayProgress = PublishSubject.create<Boolean>()
-			override val updateCounter = PublishSubject.create<PicturesView.CounterBundle>()
-			override val onCurrentPictureChanged: Observable<Int> = currentPictureChanged.sample(500, TimeUnit.MILLISECONDS)
+			override val onApplyFilter =
+					filterSelected
+							.map { filterType -> PicturesView.FilterAction(getCurrentPictureId(), filterType) }
+			override val onRotatePicture =
+					ivRotate
+							.clicks()
+							.map { getCurrentPictureId() }
+			override val onDeletePicture =
+					ivDelete
+							.clicks()
+							.map { getCurrentPictureId() }
 		}
 
 		compositeDisposable.addAll(
@@ -127,24 +131,7 @@ class PicturesViewActivity : Activity() {
 						.showPictures
 						.subscribe { pictures ->
 							picturesViewPagerAdapter.pictures = pictures.toMutableList()
-						},
-				view
-						.navigateToPicture
-						.subscribe { itemIndex ->
-							if (vpPager.currentItem != itemIndex) {
-								vpPager.currentItem = itemIndex
-							}
-						},
-				view
-						.setContentVisibility
-						.subscribe { visible ->
-							vpPager.visibility = if (visible) View.VISIBLE else View.INVISIBLE
-							tvCounter.visibility = if (visible) View.VISIBLE else View.INVISIBLE
-						},
-				view
-						.updateCounter
-						.subscribe { counterBundle ->
-							tvCounter.text = "${counterBundle.currentPage} of ${counterBundle.totalPages}"
+							currentPictureChanged.onNext(0) //TODO smells
 						},
 				view
 						.displayProgress
@@ -158,4 +145,6 @@ class PicturesViewActivity : Activity() {
 
 		return view
 	}
+
+	private fun getCurrentPictureId() = picturesViewPagerAdapter.pictures[vpPager.currentItem].id
 }

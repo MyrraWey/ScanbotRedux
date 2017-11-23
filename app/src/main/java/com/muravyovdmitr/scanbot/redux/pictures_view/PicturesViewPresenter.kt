@@ -14,39 +14,23 @@ class PicturesViewPresenter(private val model: PicturesView.Model) :
 
 	override fun onStart(view: PicturesView.View) {
 		intent(model
-				.versionProperty { state -> state.pictures }
-				.filter { pictures -> pictures.isNotEmpty() }
+				.property { state -> state.pictures }
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(view.showPictures.asConsumer()))
-		intent(model
-				.state
-				.filter { state -> state.pictures.data.isNotEmpty() }
-				.filter { state -> state.currentPicture != null }
-				.map<Int> { state -> state.currentPicture }
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(view.navigateToPicture.asConsumer()))
-		intent(model
-				.state
-				.filter { state -> state.pictures.data.isNotEmpty() }
-				.filter { state -> state.currentPicture != null }
-				.map<PicturesView.CounterBundle> { state ->
-					PicturesView.CounterBundle(state.currentPicture!! + 1, state.pictures.data.size)
-				}
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(view.updateCounter.asConsumer()))
-		intent(model
-				.state
-				.map<Boolean> { state -> state.currentPicture != null && state.pictures.data.isNotEmpty() }
-				.observeOn(AndroidSchedulers.mainThread())
-				.subscribe(view.setContentVisibility.asConsumer()))
 		intent(model
 				.property { state -> state.processing }
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(view.displayProgress.asConsumer()))
 
 		intent(view
-				.onCurrentPictureChanged
-				.subscribe(model.changeCurrentPicture.asConsumer()))
+				.onApplyFilter
+				.subscribe(model.applyFilter.asConsumer()))
+		intent(view
+				.onRotatePicture
+				.subscribe(model.rotatePicture.asConsumer()))
+		intent(view
+				.onDeletePicture
+				.subscribe(model.deletePicture.asConsumer()))
 
 		model.loadPictures.onNext(Unit)
 	}

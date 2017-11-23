@@ -1,7 +1,7 @@
 package com.muravyovdmitr.scanbot.redux.pictures_view
 
-import android.graphics.Bitmap
 import com.develop.zuzik.redux.core.store.Action
+import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
 
 /**
  * User: Dima Muravyov
@@ -9,6 +9,11 @@ import com.develop.zuzik.redux.core.store.Action
  */
 sealed class PicturesViewAction : Action {
 	class LoadingPictures : PicturesViewAction()
-	class PicturesLoaded(val pictures: List<Bitmap>, val page: Int) : PicturesViewAction()
-	class PageChanged(val page: Int) : PicturesViewAction()
+	class PicturesLoaded(val pictures: List<Picture>) : PicturesViewAction()
+	class ApplyingFilter : PicturesViewAction()
+	class FilterApplied(val pictures: List<Picture>) : PicturesViewAction()
+	class RotatingPicture : PicturesViewAction()
+	class PictureRotated(val pictures: List<Picture>) : PicturesViewAction()
+	class DeletingPicture : PicturesViewAction()
+	class PictureDeleted(val pictures: List<Picture>) : PicturesViewAction()
 }

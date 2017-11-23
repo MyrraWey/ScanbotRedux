@@ -18,10 +18,12 @@ class PicturesViewReducer : Reducer<PicturesView.State> {
 	private fun reduce(oldState: PicturesView.State, action: PicturesViewAction): PicturesView.State =
 			when (action) {
 				is PicturesViewAction.LoadingPictures -> oldState.copy(processing = true)
-				is PicturesViewAction.PicturesLoaded -> oldState.copy(
-						processing = false,
-						pictures = oldState.pictures.newVersion(action.pictures),
-						currentPicture = action.page)
-				is PicturesViewAction.PageChanged -> oldState.copy(currentPicture = action.page)
+				is PicturesViewAction.PicturesLoaded -> oldState.copy(processing = false, pictures = action.pictures)
+				is PicturesViewAction.ApplyingFilter -> oldState.copy(processing = true)
+				is PicturesViewAction.FilterApplied -> oldState.copy(processing = false, pictures = action.pictures)
+				is PicturesViewAction.RotatingPicture -> oldState.copy(processing = true)
+				is PicturesViewAction.PictureRotated -> oldState.copy(processing = false, pictures = action.pictures)
+				is PicturesViewAction.DeletingPicture -> oldState.copy(processing = true)
+				is PicturesViewAction.PictureDeleted -> oldState.copy(processing = false, pictures = action.pictures)
 			}
 }
