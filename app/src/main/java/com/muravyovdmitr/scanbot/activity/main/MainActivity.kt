@@ -3,6 +3,7 @@ package com.muravyovdmitr.scanbot.activity.main
 import android.app.Activity
 import android.os.Bundle
 import com.muravyovdmitr.scanbot.R
+import com.muravyovdmitr.scanbot.activity.pictures_view.PicturesViewActivity
 import com.muravyovdmitr.scanbot.activity.scan_bot.ScanBotActivity
 import com.muravyovdmitr.scanbot.activity.scanbot_camera.ScanbotCameraActivity
 import com.muravyovdmitr.scanbot.activity.scanbot_crop.ScanbotCropActivity
@@ -18,5 +19,6 @@ class MainActivity : Activity() {
 		bScanBotActivity.setOnClickListener { startActivity(ScanBotActivity::class) }
 		bScanbotReduxActivity.setOnClickListener { startActivity(ScanbotCameraActivity::class) }
 		bScanbotCropActivity.setOnClickListener { startActivity(ScanbotCropActivity::class) }
+		bPicturesViewActivity.setOnClickListener { startActivity(PicturesViewActivity::class) }
 	}
 }
