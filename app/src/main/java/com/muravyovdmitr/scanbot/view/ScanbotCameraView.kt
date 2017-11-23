@@ -1,5 +1,6 @@
 package com.muravyovdmitr.scanbot.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
@@ -14,6 +15,7 @@ import net.doo.snap.camera.ContourDetectorFrameHandler
 import net.doo.snap.lib.detector.DetectionResult
 import net.doo.snap.ui.PolygonView
 
+@SuppressLint("ShowToast")
 /**
  * User: Dima Muravyov
  * Date: 17.11.2017

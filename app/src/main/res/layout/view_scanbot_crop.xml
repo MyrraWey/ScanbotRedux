@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<net.doo.snap.ui.EditPolygonImageView
+		android:id="@+id/polygonView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_above="@+id/cropButton"
+		app:cornerImageSrc="@drawable/ui_crop_corner_handle"
+		app:edgeColor="#00cea6"
+		app:edgeImageSrc="@drawable/ui_crop_side_handle"
+		app:editPolygonHandleSize="48dp"
+		app:magneticLineTreshold="10dp"/>
+
+	<net.doo.snap.ui.MagnifierView
+		android:id="@+id/magnifier"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_above="@+id/cropButton"
+		app:editPolygonMagnifier="#fff"
+		app:magnifierCrossSize="16dp"
+		app:magnifierCrossStrokeWidth="2dp"
+		app:magnifierImageSrc="@drawable/ui_crop_magnifier"
+		app:magnifierMargin="16dp"
+		app:magnifierRadius="36dp"
+		app:magnifierStrokeWidth="4dp"/>
+
+</merge>
