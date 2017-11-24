@@ -12,6 +12,7 @@ import android.widget.ListView
 import android.widget.PopupWindow
 import com.jakewharton.rxbinding2.view.clicks
 import com.muravyovdmitr.scanbot.R
+import com.muravyovdmitr.scanbot.activity.scanbot_crop.ScanbotCropActivity
 import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesView
 import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesViewModel
 import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesViewPresenter
@@ -54,6 +55,12 @@ class PicturesViewActivity : Activity() {
 								tvCounter.visibility = View.INVISIBLE
 							}
 						})
+
+
+		//TODO: fix code of CropActivity launching; pass correct image id
+		ivCrop.setOnClickListener({
+			startActivity(ScanbotCropActivity.createIntent(this, 0))
+		})
 	}
 
 	override fun onStart() {

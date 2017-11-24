@@ -6,6 +6,7 @@ package com.muravyovdmitr.scanbot.repository
  */
 data class ScanbotPicture(val id: Int,
 						  val originalImageId: Int,
-						  var modifiedImageId: Int,
-						  val filters: MutableList<ScanbotFilter>) {
+						  val modifiedImageId: Int,
+						  val cropFilter: CropFilter,
+						  val colorFilter: ColorFilter) {
 }

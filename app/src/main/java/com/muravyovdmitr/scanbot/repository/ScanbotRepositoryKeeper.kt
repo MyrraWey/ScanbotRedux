@@ -5,5 +5,6 @@ package com.muravyovdmitr.scanbot.repository
  * Date: 23.11.2017.
  */
 object ScanbotRepositoryKeeper {
-	val repository = ScanbotRepository()
+	val bitmapRepository: BitmapRepository = BitmapFileRepository()
+	val pictureRepository: PictureRepository = ScanbotPictureRepository()
 }

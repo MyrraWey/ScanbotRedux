@@ -1,6 +1,8 @@
 package com.muravyovdmitr.scanbot.activity.scanbot_crop
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.View
@@ -33,9 +35,17 @@ class ScanbotCropActivity : Activity() {
 	private val progressDialog = LockProgressDialog()
 	private val saveClicks = PublishSubject.create<List<PointF>>()
 
+	companion object {
+		private val IMAGE_ID = "IMAGE_ID"
+		fun createIntent(context: Context, imageId: Int) = Intent(context, ScanbotCropActivity::class.java)
+				.putExtra(IMAGE_ID, imageId)
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scanbot_crop)
+
+		intent.getIntExtra(IMAGE_ID, 0)
 
 		model.init()
 		model.verifyState.onNext(Unit)
