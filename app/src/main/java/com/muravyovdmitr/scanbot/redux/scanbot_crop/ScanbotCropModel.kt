@@ -7,6 +7,7 @@ import android.util.Pair
 import com.develop.zuzik.redux.core.model.ReduxModel
 import com.develop.zuzik.redux.core.store.Action
 import com.muravyovdmitr.scanbot.App
+import com.muravyovdmitr.scanbot.repository.ScanbotRepositoryFacade
 import com.muravyovdmitr.scanbot.repository.SelectedContour
 import io.reactivex.Observable
 import io.reactivex.Observable.just
@@ -29,10 +30,12 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 		ReduxModel<ScanbotCrop.State>(defaultState, modelScheduler),
 		ScanbotCrop.Model {
 
+	private val repositoryFacade = ScanbotRepositoryFacade()
+
 	override val contourAutoDetect: PublishSubject<Unit> = PublishSubject.create()
 	override val resetContour: PublishSubject<Unit> = PublishSubject.create()
 	override val save: PublishSubject<List<PointF>> = PublishSubject.create()
-	override val verifyState: PublishSubject<Unit> = PublishSubject.create()
+	override val load: PublishSubject<Int> = PublishSubject.create()
 
 	init {
 		addAction(contourAutoDetect
@@ -41,7 +44,7 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 							.take(1)
 							.map { s -> s.resource }
 							.observeOn(Schedulers.computation())
-							.flatMap { resource -> transformToBitmap(resource) }
+							//.flatMap { resource -> transformToBitmap(resource) }
 							.flatMap { bitmap -> autoDetectContourObservable(bitmap) }
 							.map<Action> { contour -> ScanbotCropAction.ContourAutoDetected(contour) }
 							.startWith(ScanbotCropAction.ContourAutoDetecting())
@@ -49,9 +52,18 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 		)
 		addAction(resetContour.map { ScanbotCropAction.ResetContour(getDefaultContour()) })
 		addAction(save
-				//.flatMap { //create and apply crop filter, save to repository }
-				.map { polygon -> ScanbotCropAction.Save(polygon) })
-		addAction(verifyState.map { ScanbotCropAction.Verify(getDefaultContour()) })
+				.map {
+					repositoryFacade.updateContour(state.value.id, state.value.contour?.copy(polygon = it))
+					return@map it
+				}
+				.map { polygon -> ScanbotCropAction.Save(polygon) }
+				)
+		addAction(load
+				.flatMap { id ->
+					just(id)
+							.map { repositoryFacade.readOriginalBitmap(id) }
+							.map { resource -> ScanbotCropAction.Load(id, resource, getDefaultContour()) }
+				})
 		addReducer(ScanbotCropReducer())
 	}
 

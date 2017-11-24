@@ -21,7 +21,10 @@ class ScanbotCropReducer : Reducer<ScanbotCrop.State> {
 			is ScanbotCropAction.ContourAutoDetected -> oldState.copy(processing = false, contour = action.contour)
 			is ScanbotCropAction.ResetContour -> oldState.copy(processing = false, type = ScanbotCrop.Type.RESET, contour = action.contour)
 			is ScanbotCropAction.Save -> oldState.copy(contour = oldState.contour?.copy(polygon = action.polygon))
-			is ScanbotCropAction.Verify -> oldState.copy(contour = if (oldState.contour != null) oldState.contour else action.contour)
+			is ScanbotCropAction.Load -> oldState.copy(
+					id = action.id,
+					resource = action.resource,
+					contour = if (oldState.contour != null) oldState.contour else action.contour)
 		}
 	}
 

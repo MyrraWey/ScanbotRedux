@@ -1,5 +1,6 @@
 package com.muravyovdmitr.scanbot.redux.scanbot_crop
 
+import android.graphics.Bitmap
 import com.develop.zuzik.redux.core.extension.asConsumer
 import com.develop.zuzik.redux.core.model.ReduxPresenter
 import com.muravyovdmitr.scanbot.repository.SelectedContour
@@ -21,6 +22,11 @@ class ScanbotCropPresenter(private val model: ScanbotCrop.Model) :
 				.filter { it.contour != null }
 				.map<SelectedContour> { state -> state.contour }
 				.subscribe(view.displayContour.asConsumer()))
+		intent(model
+				.state
+				.filter { it.resource != null }
+				.map<Bitmap> { state -> state.resource }
+				.subscribe(view.setupResource.asConsumer()))
 		intent(model
 				.property { state -> state.type }
 				.subscribe(view.configureControls.asConsumer()))

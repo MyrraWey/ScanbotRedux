@@ -3,6 +3,7 @@ package com.muravyovdmitr.scanbot.activity.scanbot_crop
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.View
@@ -26,7 +27,7 @@ class ScanbotCropActivity : Activity() {
 	private val model: ScanbotCrop.Model = ScanbotCropModel(
 			ScanbotCrop.State(
 					false,
-					R.drawable.test_receipt,
+					null,
 					ScanbotCrop.Type.RESET,
 					null))
 	private val presenter: ScanbotCrop.Presenter = ScanbotCropPresenter(model)
@@ -45,10 +46,8 @@ class ScanbotCropActivity : Activity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_scanbot_crop)
 
-		intent.getIntExtra(IMAGE_ID, 0)
-
 		model.init()
-		model.verifyState.onNext(Unit)
+		model.load.onNext(intent.getIntExtra(IMAGE_ID, 0))
 		btnSave.setOnClickListener({ saveClicks.onNext(scanbotCropView.getPolygon()) })
 	}
 
@@ -72,6 +71,7 @@ class ScanbotCropActivity : Activity() {
 		val view = object : ScanbotCrop.View {
 			override val displayProgress = PublishSubject.create<Boolean>()
 			override val displayContour = PublishSubject.create<SelectedContour>()
+			override val setupResource = PublishSubject.create<Bitmap>()
 			override val configureControls = PublishSubject.create<ScanbotCrop.Type>()
 			override val onAutoDetectContourClicked = btnAutoDetectContour.clicks()
 			override val onSaveClicked = saveClicks
@@ -87,6 +87,11 @@ class ScanbotCropActivity : Activity() {
 							} else {
 								progressDialog.stop()
 							}
+						},
+				view
+						.setupResource
+						.subscribe { resource ->
+							scanbotCropView.setResource(resource)
 						},
 				view
 						.displayContour

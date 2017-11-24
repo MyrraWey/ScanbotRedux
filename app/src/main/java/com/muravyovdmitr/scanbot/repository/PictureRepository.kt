@@ -7,4 +7,6 @@ package com.muravyovdmitr.scanbot.repository
 interface PictureRepository {
 	fun create(bitmapRepoId: Int): Int
 	fun read(id: Int): ScanbotPicture
+	fun update(id: Int, picture: ScanbotPicture?)
+	fun delete(id: Int)
 }
