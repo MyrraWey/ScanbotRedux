@@ -1,7 +1,9 @@
 package com.muravyovdmitr.scanbot.redux.pictures_view
 
-import android.graphics.Bitmap
 import com.develop.zuzik.redux.core.model.Redux
+import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterType
+import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Id
+import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
 import io.reactivex.Observable
 import io.reactivex.Observer
 
@@ -11,33 +13,24 @@ import io.reactivex.Observer
  */
 interface PicturesView {
 
-	enum class Filter
+	class FilterAction(val id: Id, val filterType: FilterType)
 
-	class CounterBundle(val currentPage: Int, val totalPages: Int)
-
-	data class State(val pictures: List<Bitmap>, val currentPicture: Int?, val processing: Boolean)
+	data class State(val pictures: List<Picture>, val processing: Boolean)
 
 	interface Model : Redux.Model<State> {
 		val loadPictures: Observer<Unit>
-		val changeCurrentPicture: Observer<Int>
+		val applyFilter: Observer<FilterAction>
+		val rotatePicture: Observer<Id>
+		val deletePicture: Observer<Id>
 	}
 
 	interface View : Redux.View {
-		val showPictures: Observer<List<Bitmap>>
-		val navigateToPicture: Observer<Int>
-		val setContentVisibility: Observer<Boolean>
+		val showPictures: Observer<List<Picture>>
 		val displayProgress: Observer<Boolean>
-		val updateCounter: Observer<CounterBundle>
 
-		val onCurrentPictureChanged: Observable<Int>
-		/*fun startCropActivity(): Observer<Unit>
-
-		fun onSave(): Observable<Unit>
-		fun onAddPicture(): Observable<Unit>
-		fun onCropPicture(): Observable<Unit>
-		fun onApplyFilter(): Observable<Filter>
-		fun onRotatePicture(): Observable<Unit>
-		fun onDeletePicture(): Observable<Unit>*/
+		val onApplyFilter: Observable<FilterAction>
+		val onRotatePicture: Observable<Id>
+		val onDeletePicture: Observable<Id>
 	}
 
 	interface Presenter : Redux.Presenter<View>
