@@ -2,6 +2,7 @@ package com.muravyovdmitr.scanbot.redux.scanbot_camera
 
 import com.develop.zuzik.redux.core.extension.asConsumer
 import com.develop.zuzik.redux.core.model.ReduxPresenter
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
  * User: Dima Muravyov
@@ -14,18 +15,22 @@ class ScanbotCameraPresenter(private val model: ScanbotCamera.Model) :
 	override fun onStart(view: ScanbotCamera.View) {
 		intent(model
 				.property { state -> state.automaticCaptureEnabled }
+				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(view.setAutomaticCaptureEnabled.asConsumer()))
 		intent(model
 				.property { state -> state.flashEnabled }
+				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(view.setFlashEnabled.asConsumer()))
 		intent(model
 				.property { state -> state.processing }
+				.observeOn(AndroidSchedulers.mainThread())
 				.subscribe(view.displayProgress.asConsumer()))
 		intent(model
-				.property { state -> state.navigateBack }
+				.property { state -> state.navigateToScanbotGallery }
 				.filter { navigateBack -> navigateBack }
 				.map { Unit }
-				.subscribe(view.navigateBack.asConsumer()))
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(view.goToScanbotGallery.asConsumer()))
 
 		intent(view
 				.onToggleAutomaticCapture

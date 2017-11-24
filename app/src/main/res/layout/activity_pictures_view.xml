@@ -4,8 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/rlContent"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context="com.muravyovdmitr.scanbot.activity.pictures_view.PicturesViewActivity">
+	android:layout_height="match_parent">
 
 	<android.support.v4.view.ViewPager
 		android:id="@+id/vpPager"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-	package="com.muravyovdmitr.scanbot"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.muravyovdmitr.scanbot">
 
 	<uses-permission android:name="android.permission.CAMERA"/>
 	<uses-feature android:name="android.hardware.camera"/>
@@ -25,9 +25,13 @@
 
 		<activity android:name=".activity.scan_bot.ScanBotActivity"/>
 
-		<activity android:name=".activity.scanbot_camera.ScanbotCameraActivity"/>
+		<activity
+			android:name=".activity.scanbot_camera.ScanbotCameraActivity"
+			android:launchMode="singleTop"/>
 
-		<activity android:name=".activity.pictures_view.PicturesViewActivity"/>
+		<activity
+			android:name=".activity.scanbot_gallery.ScanbotGalleryActivity"
+			android:launchMode="singleTop"/>
 
 		<activity android:name=".activity.scanbot_crop.ScanbotCropActivity"/>
 	</application>

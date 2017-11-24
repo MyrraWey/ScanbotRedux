@@ -13,7 +13,7 @@ interface ScanbotCamera {
 	data class State(val flashEnabled: Boolean,
 					 val automaticCaptureEnabled: Boolean,
 					 val processing: Boolean,
-					 val navigateBack: Boolean)
+					 val navigateToScanbotGallery: Boolean)
 
 	data class PictureBundle(val pictureBytes: ByteArray, val pictureOrientation: Int)
 
@@ -29,7 +29,7 @@ interface ScanbotCamera {
 		val setAutomaticCaptureEnabled: Observer<Boolean>
 		val displayProgress: Observer<Boolean>
 		val takePicture: Observer<Unit>
-		val navigateBack: Observer<Unit>
+		val goToScanbotGallery: Observer<Unit>
 
 		val onToggleFlash: Observable<Unit>
 		val onToggleAutomaticCapture: Observable<Unit>
