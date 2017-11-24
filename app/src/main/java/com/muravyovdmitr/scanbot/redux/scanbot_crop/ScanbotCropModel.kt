@@ -7,6 +7,7 @@ import android.util.Pair
 import com.develop.zuzik.redux.core.model.ReduxModel
 import com.develop.zuzik.redux.core.store.Action
 import com.muravyovdmitr.scanbot.App
+import com.muravyovdmitr.scanbot.repository.SelectedContour
 import io.reactivex.Observable
 import io.reactivex.Observable.just
 import io.reactivex.Scheduler
@@ -54,9 +55,9 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 		addReducer(ScanbotCropReducer())
 	}
 
-	private fun getDefaultContour(): ScanbotCrop.SelectedContour {
+	private fun getDefaultContour(): SelectedContour {
 		val detector = ContourDetector()
-		return ScanbotCrop.SelectedContour(
+		return SelectedContour(
 				Pair(detector.horizontalLines, detector.verticalLines),
 				ArrayList(EditPolygonImageView.DEFAULT_POLYGON))
 	}
@@ -65,11 +66,11 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 		return Observable.defer { just(BitmapFactory.decodeResource(App.INSTANCE.getResources(), resource)) }
 	}
 
-	fun autoDetectContourObservable(image: Bitmap): io.reactivex.Observable<ScanbotCrop.SelectedContour> {
+	fun autoDetectContourObservable(image: Bitmap): io.reactivex.Observable<SelectedContour> {
 		return Observable.defer { just(autoDetectContour(image)) }
 	}
 
-	fun autoDetectContour(image: Bitmap): ScanbotCrop.SelectedContour {
+	fun autoDetectContour(image: Bitmap): SelectedContour {
 		val detector = ContourDetector()
 		val detectionResult = detector.detect(image)
 		var linesPair: Pair<List<Line2D>, List<Line2D>>? = null
@@ -83,6 +84,6 @@ class ScanbotCropModel(defaultState: ScanbotCrop.State,
 				polygon = detector.polygonF
 			}
 		}
-		return ScanbotCrop.SelectedContour(linesPair, polygon)
+		return SelectedContour(linesPair, polygon)
 	}
 }

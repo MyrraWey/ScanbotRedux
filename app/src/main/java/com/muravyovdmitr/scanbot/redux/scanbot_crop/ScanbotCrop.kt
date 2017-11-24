@@ -1,11 +1,10 @@
 package com.muravyovdmitr.scanbot.redux.scanbot_crop
 
 import android.graphics.PointF
-import android.util.Pair
 import com.develop.zuzik.redux.core.model.Redux
+import com.muravyovdmitr.scanbot.repository.SelectedContour
 import io.reactivex.Observable
 import io.reactivex.Observer
-import net.doo.snap.lib.detector.Line2D
 
 /**
  * Created by: Alex Kucherenko
@@ -22,9 +21,6 @@ interface ScanbotCrop {
 		AUTODETECT,
 		USER_MANUAL
 	}
-
-	data class SelectedContour(val linesPair: Pair<List<Line2D>, List<Line2D>>?,
-							   val polygon: List<PointF>?)
 
 	interface Model : Redux.Model<State> {
 		val contourAutoDetect: Observer<Unit>

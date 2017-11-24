@@ -2,6 +2,7 @@ package com.muravyovdmitr.scanbot.redux.scanbot_crop
 
 import com.develop.zuzik.redux.core.extension.asConsumer
 import com.develop.zuzik.redux.core.model.ReduxPresenter
+import com.muravyovdmitr.scanbot.repository.SelectedContour
 
 /**
  * Created by: Alex Kucherenko
@@ -18,7 +19,7 @@ class ScanbotCropPresenter(private val model: ScanbotCrop.Model) :
 		intent(model
 				.state
 				.filter { it.contour != null }
-				.map<ScanbotCrop.SelectedContour> { state -> state.contour }
+				.map<SelectedContour> { state -> state.contour }
 				.subscribe(view.displayContour.asConsumer()))
 		intent(model
 				.property { state -> state.type }

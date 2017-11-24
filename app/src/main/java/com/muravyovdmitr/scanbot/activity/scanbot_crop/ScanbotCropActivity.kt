@@ -9,6 +9,7 @@ import com.muravyovdmitr.scanbot.R
 import com.muravyovdmitr.scanbot.redux.scanbot_crop.ScanbotCrop
 import com.muravyovdmitr.scanbot.redux.scanbot_crop.ScanbotCropModel
 import com.muravyovdmitr.scanbot.redux.scanbot_crop.ScanbotCropPresenter
+import com.muravyovdmitr.scanbot.repository.SelectedContour
 import com.muravyovdmitr.scanbot.view.LockProgressDialog
 import com.muravyovdmitr.scanbot.view.ScanbotCropView
 import io.reactivex.disposables.CompositeDisposable
@@ -60,7 +61,7 @@ class ScanbotCropActivity : Activity() {
 	private fun createViewAndInitDisposable(): ScanbotCrop.View {
 		val view = object : ScanbotCrop.View {
 			override val displayProgress = PublishSubject.create<Boolean>()
-			override val displayContour = PublishSubject.create<ScanbotCrop.SelectedContour>()
+			override val displayContour = PublishSubject.create<SelectedContour>()
 			override val configureControls = PublishSubject.create<ScanbotCrop.Type>()
 			override val onAutoDetectContourClicked = btnAutoDetectContour.clicks()
 			override val onSaveClicked = saveClicks
