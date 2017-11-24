@@ -1,5 +1,6 @@
 package com.muravyovdmitr.scanbot.redux.scanbot_camera
 
+import android.util.Log
 import com.develop.zuzik.redux.core.store.Action
 import com.develop.zuzik.redux.core.store.Reducer
 
@@ -11,7 +12,9 @@ class ScanbotCameraReducer : Reducer<ScanbotCamera.State> {
 
 	override fun reduce(oldState: ScanbotCamera.State, action: Action): ScanbotCamera.State =
 			(action as? ScanbotCameraAction)?.let {
-				reduce(oldState, it)
+				reduce(oldState, it).apply {
+					Log.d("asdasd", "ScanbotCameraReducer action - $action resultState - $this")
+				}
 			} ?: oldState
 
 
@@ -22,6 +25,6 @@ class ScanbotCameraReducer : Reducer<ScanbotCamera.State> {
 					oldState.copy(automaticCaptureEnabled = !oldState.automaticCaptureEnabled)
 				is ScanbotCameraAction.TakePicture -> oldState.copy(processing = true)
 				is ScanbotCameraAction.HandlePicture -> oldState.copy(processing = true)
-				is ScanbotCameraAction.PictureHandled -> oldState.copy(processing = false, navigateBack = true)
+				is ScanbotCameraAction.PictureHandled -> oldState.copy(processing = false, navigateToScanbotGallery = true)
 			}
 }

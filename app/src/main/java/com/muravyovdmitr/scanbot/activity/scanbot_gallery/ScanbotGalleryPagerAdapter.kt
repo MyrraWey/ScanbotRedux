@@ -1,10 +1,11 @@
-package com.muravyovdmitr.scanbot.activity.pictures_view
+package com.muravyovdmitr.scanbot.activity.scanbot_gallery
 
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
+import com.muravyovdmitr.scanbot.repository.BitmapRepository
+import com.muravyovdmitr.scanbot.repository.ScanbotPicture
 
 
 /**
@@ -12,8 +13,8 @@ import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
  * Date: 21.11.2017
  */
 
-class PicturesViewPagerAdapter : PagerAdapter() {
-	var pictures: MutableList<Picture> = mutableListOf()
+class ScanbotGalleryPagerAdapter(private val bitmapRepository: BitmapRepository) : PagerAdapter() {
+	var pictures: MutableList<ScanbotPicture> = mutableListOf()
 		set(pictures) {
 			field.clear()
 			field.addAll(pictures)
@@ -24,9 +25,15 @@ class PicturesViewPagerAdapter : PagerAdapter() {
 
 	override fun getCount(): Int = pictures.size
 
+	override fun getItemPosition(`object`: Any?): Int {
+		/*TODO add correct logic for position validation*/
+		return POSITION_NONE
+	}
+
 	override fun instantiateItem(container: ViewGroup, position: Int): Any {
 		val imageView = ImageView(container.context)
-		imageView.setImageBitmap(pictures[position].picture)
+		//TODO smells - maybe it't better to extract image loading logic
+		imageView.setImageBitmap(bitmapRepository.read(pictures[position].modifiedImageId))
 		container.addView(imageView)
 		return imageView
 	}

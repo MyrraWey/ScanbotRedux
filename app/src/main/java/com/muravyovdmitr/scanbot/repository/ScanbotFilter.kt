@@ -7,5 +7,5 @@ import android.graphics.Bitmap
  * Date: 23.11.2017.
  */
 interface ScanbotFilter {
-	fun apply(bitmap: Bitmap):Bitmap
+	fun apply(bitmap: Bitmap): Bitmap
 }

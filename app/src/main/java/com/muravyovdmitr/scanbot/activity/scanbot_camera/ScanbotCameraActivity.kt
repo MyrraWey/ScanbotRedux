@@ -4,10 +4,13 @@ import android.app.Activity
 import android.os.Bundle
 import com.jakewharton.rxbinding2.view.clicks
 import com.muravyovdmitr.scanbot.R
+import com.muravyovdmitr.scanbot.activity.scanbot_gallery.ScanbotGalleryActivity
 import com.muravyovdmitr.scanbot.redux.scanbot_camera.ScanbotCamera
 import com.muravyovdmitr.scanbot.redux.scanbot_camera.ScanbotCameraModel
 import com.muravyovdmitr.scanbot.redux.scanbot_camera.ScanbotCameraPresenter
 import com.muravyovdmitr.scanbot.redux.scanbot_camera.bitmap_factory.ScanbotBitmapFactoryImpl
+import com.muravyovdmitr.scanbot.repository.ScanbotRepositoryKeeper
+import com.muravyovdmitr.scanbot.startActivity
 import com.muravyovdmitr.scanbot.view.LockProgressDialog
 import com.muravyovdmitr.scanbot.view.ScanbotCameraView
 import io.reactivex.disposables.CompositeDisposable
@@ -17,7 +20,8 @@ import kotlinx.android.synthetic.main.activity_scanbot_camera.*
 class ScanbotCameraActivity : Activity() {
 	private val model: ScanbotCamera.Model = ScanbotCameraModel(
 			ScanbotCamera.State(false, true, false, false),
-			ScanbotBitmapFactoryImpl())
+			ScanbotBitmapFactoryImpl(),
+			ScanbotRepositoryKeeper.pictureRepository)
 	private val presenter: ScanbotCamera.Presenter = ScanbotCameraPresenter(model)
 	private val compositeDisposable = CompositeDisposable()
 	private val cameraView: ScanbotCameraView by lazy { scvCamera }
@@ -68,7 +72,7 @@ class ScanbotCameraActivity : Activity() {
 			override val setAutomaticCaptureEnabled = PublishSubject.create<Boolean>()
 			override val displayProgress = PublishSubject.create<Boolean>()
 			override val takePicture = PublishSubject.create<Unit>()
-			override val navigateBack = PublishSubject.create<Unit>()
+			override val goToScanbotGallery = PublishSubject.create<Unit>()
 			override val onToggleFlash = tvFlashStatus.clicks()
 			override val onToggleAutomaticCapture = tvAutomaticCaptureStatus.clicks()
 			override val onTakePicture = tvTakePhoto.clicks()
@@ -101,8 +105,9 @@ class ScanbotCameraActivity : Activity() {
 						.takePicture
 						.subscribe { cameraView.takePicture() },
 				view
-						.navigateBack
+						.goToScanbotGallery
 						.subscribe {
+							startActivity(ScanbotGalleryActivity::class)
 							finish()
 						})
 

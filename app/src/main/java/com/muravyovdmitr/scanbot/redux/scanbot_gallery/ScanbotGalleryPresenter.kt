@@ -1,4 +1,4 @@
-package com.muravyovdmitr.scanbot.redux.pictures_view
+package com.muravyovdmitr.scanbot.redux.scanbot_gallery
 
 import com.develop.zuzik.redux.core.extension.asConsumer
 import com.develop.zuzik.redux.core.model.ReduxPresenter
@@ -8,11 +8,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
  * User: Dima Muravyov
  * Date: 22.11.2017
  */
-class PicturesViewPresenter(private val model: PicturesView.Model) :
-		ReduxPresenter<PicturesView.View>(),
-		PicturesView.Presenter {
+class ScanbotGalleryPresenter(private val model: ScanbotGallery.Model) :
+		ReduxPresenter<ScanbotGallery.View>(),
+		ScanbotGallery.Presenter {
 
-	override fun onStart(view: PicturesView.View) {
+	override fun onStart(view: ScanbotGallery.View) {
 		intent(model
 				.property { state -> state.pictures }
 				.observeOn(AndroidSchedulers.mainThread())

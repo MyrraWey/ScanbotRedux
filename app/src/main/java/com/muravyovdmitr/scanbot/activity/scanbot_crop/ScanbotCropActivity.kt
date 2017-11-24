@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_scanbot_crop.*
  */
 class ScanbotCropActivity : Activity() {
 	private val model: ScanbotCrop.Model = ScanbotCropModel(
-			ScanbotCrop.State(
+			ScanbotCrop.State(0,
 					false,
 					null,
 					ScanbotCrop.Type.RESET,

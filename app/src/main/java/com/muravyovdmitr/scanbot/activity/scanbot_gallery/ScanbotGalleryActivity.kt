@@ -1,6 +1,7 @@
-package com.muravyovdmitr.scanbot.activity.pictures_view
+package com.muravyovdmitr.scanbot.activity.scanbot_gallery
 
 import android.app.Activity
+import android.database.DataSetObserver
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.view.Gravity
@@ -13,28 +14,26 @@ import android.widget.PopupWindow
 import com.jakewharton.rxbinding2.view.clicks
 import com.muravyovdmitr.scanbot.R
 import com.muravyovdmitr.scanbot.activity.scanbot_crop.ScanbotCropActivity
-import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesView
-import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesViewModel
-import com.muravyovdmitr.scanbot.redux.pictures_view.PicturesViewPresenter
-import com.muravyovdmitr.scanbot.redux.pictures_view.StubPicturesRepository
-import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterProvider
-import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterToNameMapper
-import com.muravyovdmitr.scanbot.redux.pictures_view.filter.FilterType
-import com.muravyovdmitr.scanbot.redux.pictures_view.picture.Picture
+import com.muravyovdmitr.scanbot.redux.scanbot_gallery.ScanbotGallery
+import com.muravyovdmitr.scanbot.redux.scanbot_gallery.ScanbotGalleryModel
+import com.muravyovdmitr.scanbot.redux.scanbot_gallery.ScanbotGalleryPresenter
+import com.muravyovdmitr.scanbot.redux.scanbot_gallery.StubScanbotBitmapRepository
+import com.muravyovdmitr.scanbot.repository.*
 import com.muravyovdmitr.scanbot.view.LockProgressDialog
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_pictures_view.*
 
-class PicturesViewActivity : Activity() {
-	private val model: PicturesView.Model = PicturesViewModel(PicturesView.State(listOf(), false), StubPicturesRepository())
-	private val presenter: PicturesView.Presenter = PicturesViewPresenter(model)
+class ScanbotGalleryActivity : Activity() {
+	private val model: ScanbotGallery.Model = ScanbotGalleryModel(ScanbotGallery.State(listOf(), false))
+	private val presenter: ScanbotGallery.Presenter = ScanbotGalleryPresenter(model)
 	private val compositeDisposable = CompositeDisposable()
-	private val currentPictureChanged = PublishSubject.create<Int>()
-	private val filterSelected = PublishSubject.create<FilterType>()
-	private val picturesViewPagerAdapter = PicturesViewPagerAdapter()
-	private val filterProvider = FilterProvider()
-	private val filterToNameMapper = FilterToNameMapper()
+	private val currentPictureChanged = PublishSubject.create<Unit>()
+	private val filterSelected = PublishSubject.create<ColorFilterType>()
+	private val bitmapRepository: BitmapRepository = StubScanbotBitmapRepository()/*TODO ScanbotRepositoryKeeper.bitmapRepository*/
+	private val picturesViewPagerAdapter = ScanbotGalleryPagerAdapter(bitmapRepository)
+	private val filterProvider = ColorFilterProvider()
+	private val filterToNameMapper = ColorFilterToNameMapper()
 	private val progressDialog = LockProgressDialog()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,21 +42,25 @@ class PicturesViewActivity : Activity() {
 
 		model.init()
 		configureViews()
+		picturesViewPagerAdapter.registerDataSetObserver(object : DataSetObserver() {
 
-		//TODO smells - logic should be separated from activity
+			override fun onChanged() {
+				if (picturesViewPagerAdapter.pictures.isNotEmpty()) {
+					currentPictureChanged.onNext(Unit)
+					tvCounter.visibility = View.VISIBLE
+				} else {
+					tvCounter.visibility = View.INVISIBLE
+				}
+			}
+		})
 		compositeDisposable.addAll(
 				currentPictureChanged
 						.subscribe { currentPage ->
-							if (picturesViewPagerAdapter.pictures.isNotEmpty()) {
-								tvCounter.text = "${currentPage + 1} of ${picturesViewPagerAdapter.pictures.size}"
-								tvCounter.visibility = View.VISIBLE
-							} else {
-								tvCounter.visibility = View.INVISIBLE
-							}
+							tvCounter.text = "${vpPager.currentItem + 1} of ${picturesViewPagerAdapter.pictures.size}"
 						})
 
 
-		//TODO: fix code of CropActivity launching; pass correct image id
+		//TODO: fix code of CropActivity launching; pass correct image scanbotPictureId
 		ivCrop.setOnClickListener({
 			startActivity(ScanbotCropActivity.createIntent(this, 0))
 		})
@@ -112,17 +115,17 @@ class PicturesViewActivity : Activity() {
 		vpPager.adapter = picturesViewPagerAdapter
 		vpPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
 
-			override fun onPageSelected(position: Int) = currentPictureChanged.onNext(position)
+			override fun onPageSelected(position: Int) = currentPictureChanged.onNext(Unit)
 		})
 	}
 
-	private fun createViewAndInitDisposables(): PicturesView.View {
-		val view = object : PicturesView.View {
-			override val showPictures = PublishSubject.create<List<Picture>>()
+	private fun createViewAndInitDisposables(): ScanbotGallery.View {
+		val view = object : ScanbotGallery.View {
+			override val showPictures = PublishSubject.create<List<ScanbotPicture>>()
 			override val displayProgress = PublishSubject.create<Boolean>()
 			override val onApplyFilter =
 					filterSelected
-							.map { filterType -> PicturesView.FilterAction(getCurrentPictureId(), filterType) }
+							.map { filterType -> ScanbotGallery.FilterAction(getCurrentPictureId(), filterType) }
 			override val onRotatePicture =
 					ivRotate
 							.clicks()
@@ -138,7 +141,6 @@ class PicturesViewActivity : Activity() {
 						.showPictures
 						.subscribe { pictures ->
 							picturesViewPagerAdapter.pictures = pictures.toMutableList()
-							currentPictureChanged.onNext(0) //TODO smells
 						},
 				view
 						.displayProgress
