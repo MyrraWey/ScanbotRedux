@@ -25,6 +25,11 @@ class ScanbotGalleryPagerAdapter(private val bitmapRepository: BitmapRepository)
 
 	override fun getCount(): Int = pictures.size
 
+	override fun getItemPosition(`object`: Any?): Int {
+		/*TODO add correct logic for position validation*/
+		return POSITION_NONE
+	}
+
 	override fun instantiateItem(container: ViewGroup, position: Int): Any {
 		val imageView = ImageView(container.context)
 		//TODO smells - maybe it't better to extract image loading logic

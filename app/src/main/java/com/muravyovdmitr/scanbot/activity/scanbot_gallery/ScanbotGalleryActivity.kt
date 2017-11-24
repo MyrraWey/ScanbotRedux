@@ -18,11 +18,7 @@ import com.muravyovdmitr.scanbot.redux.scanbot_gallery.ScanbotGallery
 import com.muravyovdmitr.scanbot.redux.scanbot_gallery.ScanbotGalleryModel
 import com.muravyovdmitr.scanbot.redux.scanbot_gallery.ScanbotGalleryPresenter
 import com.muravyovdmitr.scanbot.redux.scanbot_gallery.StubScanbotBitmapRepository
-import com.muravyovdmitr.scanbot.repository.BitmapRepository
-import com.muravyovdmitr.scanbot.repository.ScanbotPicture
-import com.muravyovdmitr.scanbot.repository.ColorFilterProvider
-import com.muravyovdmitr.scanbot.repository.ColorFilterToNameMapper
-import com.muravyovdmitr.scanbot.repository.ColorFilterType
+import com.muravyovdmitr.scanbot.repository.*
 import com.muravyovdmitr.scanbot.view.LockProgressDialog
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -32,7 +28,7 @@ class ScanbotGalleryActivity : Activity() {
 	private val model: ScanbotGallery.Model = ScanbotGalleryModel(ScanbotGallery.State(listOf(), false))
 	private val presenter: ScanbotGallery.Presenter = ScanbotGalleryPresenter(model)
 	private val compositeDisposable = CompositeDisposable()
-	private val currentPictureChanged = PublishSubject.create<Int>()
+	private val currentPictureChanged = PublishSubject.create<Unit>()
 	private val filterSelected = PublishSubject.create<ColorFilterType>()
 	private val bitmapRepository: BitmapRepository = StubScanbotBitmapRepository()/*TODO ScanbotRepositoryKeeper.bitmapRepository*/
 	private val picturesViewPagerAdapter = ScanbotGalleryPagerAdapter(bitmapRepository)
@@ -50,7 +46,7 @@ class ScanbotGalleryActivity : Activity() {
 
 			override fun onChanged() {
 				if (picturesViewPagerAdapter.pictures.isNotEmpty()) {
-					currentPictureChanged.onNext(0)
+					currentPictureChanged.onNext(Unit)
 					tvCounter.visibility = View.VISIBLE
 				} else {
 					tvCounter.visibility = View.INVISIBLE
@@ -60,7 +56,7 @@ class ScanbotGalleryActivity : Activity() {
 		compositeDisposable.addAll(
 				currentPictureChanged
 						.subscribe { currentPage ->
-							tvCounter.text = "${currentPage + 1} of ${picturesViewPagerAdapter.pictures.size}"
+							tvCounter.text = "${vpPager.currentItem + 1} of ${picturesViewPagerAdapter.pictures.size}"
 						})
 
 
@@ -119,7 +115,7 @@ class ScanbotGalleryActivity : Activity() {
 		vpPager.adapter = picturesViewPagerAdapter
 		vpPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
 
-			override fun onPageSelected(position: Int) = currentPictureChanged.onNext(position)
+			override fun onPageSelected(position: Int) = currentPictureChanged.onNext(Unit)
 		})
 	}
 
